@@ -181,4 +181,24 @@ INSERT INTO `user_roles_role` (`userId`, `roleId`) VALUES (1, 1);
 INSERT INTO `user_roles_role` (`userId`, `roleId`) VALUES (1, 2);
 COMMIT;
 
+-- ----------------------------
+-- Table structure for qrcode
+-- ----------------------------
+DROP TABLE IF EXISTS `qrcode`;
+CREATE TABLE `qrcode` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `creatorId` int NOT NULL COMMENT '生成者用户ID',
+  `isValid` tinyint NOT NULL DEFAULT '1' COMMENT '二维码是否有效',
+  `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
+-- Records of qrcode
+-- ----------------------------
+BEGIN;
+INSERT INTO `qrcode` (`id`, `creatorId`, `isValid`, `createdAt`) VALUES (1, 1, 1, '2023-11-18 16:18:59.150632');
+INSERT INTO `qrcode` (`id`, `creatorId`, `isValid`, `createdAt`) VALUES (2, 1, 1, '2023-11-19 10:00:00.000000');
+COMMIT;
+
 SET FOREIGN_KEY_CHECKS = 1;

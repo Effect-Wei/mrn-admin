@@ -14,6 +14,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { QRcodeController } from './qrcode.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { QRCode } from './qrcode.entity';
+import { QRCodeService } from './qrcode.service';
 
 @Module({
   imports: [
@@ -27,8 +31,9 @@ import { JwtStrategy } from './jwt.strategy';
         };
       },
     }),
+    TypeOrmModule.forFeature([QRCode]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  controllers: [AuthController, QRcodeController],
+  providers: [AuthService, LocalStrategy, JwtStrategy, QRCodeService],
 })
 export class AuthModule {}

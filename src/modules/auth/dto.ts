@@ -1,12 +1,4 @@
-/**********************************
- * @Author: Ronnie Zhang
- * @LastEditor: Ronnie Zhang
- * @LastEditTime: 2023/12/07 20:25:55
- * @Email: zclzone@outlook.com
- * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- **********************************/
-
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsString, IsInt, Length } from 'class-validator';
 
 export class LoginDto {
   @IsString()
@@ -38,4 +30,28 @@ export class ChangePasswordDto {
   @IsString()
   @IsNotEmpty({ message: '新密码不能为空' })
   newPassword: string;
+}
+
+export class GenerateQRCodeDto {
+  @IsString()
+  @IsNotEmpty({ message: '二维码类型不能为空' })
+  type: string; // QR 码的类型，例如登录、支付等
+
+  @IsInt()
+  @IsNotEmpty({ message: '用户ID不能为空' })
+  userId: number; // 用户的唯一标识符
+}
+
+export class ResolveQRCodeDto {
+  @IsString()
+  @IsNotEmpty({ message: '加密数据不能为空' })
+  encrypted: string; // 加密后的数据
+
+  @IsString()
+  @IsNotEmpty({ message: '初始化向量 (IV) 不能为空' })
+  iv: string; // 加密时使用的初始化向量 (IV)
+
+  @IsString()
+  @IsNotEmpty({ message: '认证标签 (authTag) 不能为空' })
+  authTag: string; // AES-GCM 模式生成的认证标签
 }
