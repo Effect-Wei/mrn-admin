@@ -270,8 +270,6 @@ const onSubmit = async () => {
         padding-bottom: 16px;
         position: relative;
         z-index: 1;
-        position: absolute;
-        left: 160px;
         // background: transparent;
         // overflow: hidden;
         // &::before {
