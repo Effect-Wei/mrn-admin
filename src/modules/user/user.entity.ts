@@ -33,6 +33,12 @@ export class User {
   @Column({ default: true })
   enable: boolean;
 
+  @Column({ type: 'varchar', length: 20, nullable: true, comment: '用户绑定的QQ号' })
+  qq: string;
+
+  @Column('int', { default: 0, comment: '用户点数' })
+  points: number;
+
   @CreateDateColumn()
   createTime: Date;
 

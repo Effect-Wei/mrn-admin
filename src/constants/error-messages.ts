@@ -1,0 +1,8 @@
+export const ERROR_MESSAGES = {
+  USER_NOT_FOUND: '用户不存在',
+  INSUFFICIENT_POINTS: '点数不足',
+  BILLING_ALREADY_IN_PROGRESS: '用户当前已在计费中',
+  BILLING_INTERVAL_NOT_FOUND: '计费区间不存在',
+  BILLING_INTERVAL_ALREADY_ENDED: '计费区间已结束',
+  NO_UNFINISHED_BILLING_INTERVAL: '未找到用户的未结束计费区间',
+};

@@ -47,6 +47,11 @@ export class CreateUserDto {
   enable?: boolean;
 
   @IsOptional()
+  @IsString()
+  @Length(1, 20)
+  qq?: string;
+
+  @IsOptional()
   profile?: Profile;
 
   @IsOptional()
@@ -72,6 +77,11 @@ export class UpdateUserDto {
   @IsBoolean()
   @IsOptional()
   enable?: boolean;
+
+  @IsOptional()
+  @IsString()
+  @Length(1, 20)
+  qq?: string;
 
   @IsOptional()
   @IsArray()

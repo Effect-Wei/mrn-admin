@@ -148,17 +148,19 @@ CREATE TABLE `user` (
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `enable` tinyint NOT NULL DEFAULT '1',
+  `qq` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '用户绑定的QQ号',
   `createTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updateTime` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  `points` INT DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `IDX_78a916df40e02a9deb1c4b75ed` (`username`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1000002 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `username`, `password`, `enable`, `createTime`, `updateTime`) VALUES (1, 'admin', '$2a$10$FsAafxTTVVGXfIkJqvaiV.1vPfq4V9HW298McPldJgO829PR52a56', 1, '2023-11-18 16:18:59.150632', '2023-11-18 16:18:59.150632');
+INSERT INTO `user` (`id`, `username`, `password`, `enable`, `createTime`, `updateTime`) VALUES (1000001, 'admin', '$2a$10$FsAafxTTVVGXfIkJqvaiV.1vPfq4V9HW298McPldJgO829PR52a56', 1, '2023-11-18 16:18:59.150632', '2023-11-18 16:18:59.150632');
 COMMIT;
 
 -- ----------------------------
@@ -182,10 +184,10 @@ INSERT INTO `user_roles_role` (`userId`, `roleId`) VALUES (1, 2);
 COMMIT;
 
 -- ----------------------------
--- Table structure for qrcode
+-- Table structure for qrcodes
 -- ----------------------------
-DROP TABLE IF EXISTS `qrcode`;
-CREATE TABLE `qrcode` (
+DROP TABLE IF EXISTS `qrcodes`;
+CREATE TABLE `qrcodes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `creatorId` int NOT NULL COMMENT '生成者用户ID',
   `isValid` tinyint NOT NULL DEFAULT '1' COMMENT '二维码是否有效',
@@ -194,11 +196,41 @@ CREATE TABLE `qrcode` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Records of qrcode
+-- Records of qrcodes
 -- ----------------------------
 BEGIN;
-INSERT INTO `qrcode` (`id`, `creatorId`, `isValid`, `createdAt`) VALUES (1, 1, 1, '2023-11-18 16:18:59.150632');
-INSERT INTO `qrcode` (`id`, `creatorId`, `isValid`, `createdAt`) VALUES (2, 1, 1, '2023-11-19 10:00:00.000000');
+INSERT INTO `qrcodes` (`id`, `creatorId`, `isValid`, `createdAt`) VALUES (1, 1, 1, '2023-11-18 16:18:59.150632');
+INSERT INTO `qrcodes` (`id`, `creatorId`, `isValid`, `createdAt`) VALUES (2, 1, 1, '2023-11-19 10:00:00.000000');
 COMMIT;
+
+-- 新增计费区间表
+DROP TABLE IF EXISTS `billing_intervals`;
+CREATE TABLE `billing_intervals` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  `startTime` DATETIME NOT NULL,
+  `endTime` DATETIME DEFAULT NULL,
+  `rate` FLOAT DEFAULT 1,
+  `amount` INT DEFAULT NULL,
+  `startLocation` VARCHAR(255) DEFAULT NULL,
+  `endLocation` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_unfinished_interval` (`userId`, `endTime`),
+  FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE,
+  KEY `IDX_user_endTime` (`userId`, `endTime`),
+  KEY `IDX_startTime_endTime` (`startTime`, `endTime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 新增一次性计费表
+DROP TABLE IF EXISTS `one_time_billing`;
+CREATE TABLE `one_time_billing` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  `timestamp` DATETIME NOT NULL,
+  `amount` INT NOT NULL,
+  `location` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

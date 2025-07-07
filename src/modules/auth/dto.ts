@@ -44,14 +44,6 @@ export class GenerateQRCodeDto {
 
 export class ResolveQRCodeDto {
   @IsString()
-  @IsNotEmpty({ message: '加密数据不能为空' })
-  encrypted: string; // 加密后的数据
-
-  @IsString()
-  @IsNotEmpty({ message: '初始化向量 (IV) 不能为空' })
-  iv: string; // 加密时使用的初始化向量 (IV)
-
-  @IsString()
-  @IsNotEmpty({ message: '认证标签 (authTag) 不能为空' })
-  authTag: string; // AES-GCM 模式生成的认证标签
+  @IsNotEmpty({ message: '数据不能为空' })
+  data: string; // 转换成Base64字符串的数据
 }

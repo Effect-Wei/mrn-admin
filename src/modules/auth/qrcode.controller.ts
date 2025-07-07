@@ -31,15 +31,23 @@ export class QRcodeController {
     // Step 5: 加密数据并生成随机 IV 和认证标签
     const { encrypted, iv, authTag } = this.encryptData(content, key);
 
-    // Step 6: 返回加密后的数据、IV 和认证标签
-    return { encrypted, iv, authTag };
+    // Step 6: 将加密后的数据、IV 和认证标签封装为结构体并转换为 Base64 字符串
+    const payload = JSON.stringify({ encrypted, iv, authTag });
+    const base64Payload = Buffer.from(payload, 'utf8').toString('base64');
+
+    // Step 7: 返回 Base64 编码的结构体
+    return base64Payload;
   }
 
   @Post('resolve')
   async resolveQRcode(@Req() req: any, @Body() body: ResolveQRCodeDto) {
-    const { encrypted, iv, authTag } = body;
+    const { data } = body;
 
-    // Step 1: 检查并生成解密密钥
+    // Step 1: 解码 Base64 字符串并解析为结构体
+    const decodedPayload = Buffer.from(data, 'base64').toString('utf8');
+    const { encrypted, iv, authTag } = JSON.parse(decodedPayload);
+
+    // Step 2: 检查并生成解密密钥
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) {
       throw new Error('Environment variable SECRET_KEY is not set.');
@@ -48,20 +56,20 @@ export class QRcodeController {
 
     let content;
     try {
-      // Step 2: 解密数据并验证完整性
+      // Step 3: 解密数据并验证完整性
       content = this.decryptData(encrypted, iv, authTag, key);
     } catch (error) {
       throw new BadRequestException('Decryption failed or data integrity check failed.');
     }
 
-    // Step 3: 验证二维码是否有效
+    // Step 4: 验证二维码是否有效
     const { id, userId } = content;
     const qrCodeValid = await this.qrCodeService.validateQRCode(id, userId);
     if (!qrCodeValid) {
       throw new BadRequestException('Invalid QR code or user.');
     }
 
-    // Step 4: 返回解密后的内容
+    // Step 5: 返回解密后的内容
     return { content };
   }
 
